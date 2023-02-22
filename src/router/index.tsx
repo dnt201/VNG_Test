@@ -1,15 +1,19 @@
-import React from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Customers from "src/pages/Customers";
+import Employees from "src/pages/Employees";
+import Orders from "src/pages/Orders";
+import SomeThingWentWrong from "src/pages/SomeThingWentWrong";
 import App from "../App";
 
 const DeclareRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<App />}>
-        <Route path="employees" element={<App />} />
-        <Route path="customers" element={<App />} />
-        <Route path="orders" element={<App />} />
+        <Route path="employees" element={<Employees />} />
+        <Route path="customers" element={<Customers />} />
+        <Route path="orders" element={<Orders />} />
       </Route>
+      <Route path="*" element={<SomeThingWentWrong />} />
     </Routes>
   );
 };

@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import "react-datepicker/dist/react-datepicker.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 import { BrowserRouter } from "react-router-dom";
 import DeclareRouter from "./router";
 
@@ -12,6 +15,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <DeclareRouter />
+      <ToastContainer style={{ zIndex: 1000000 }} />
     </BrowserRouter>
   </React.StrictMode>
 );

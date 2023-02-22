@@ -9,10 +9,12 @@ module.exports = {
         primaryLow: "#ff4e0e",
         secondary: "#858EAD",
 
-        no: "#d03248",
-        yes: "#388d37",
+        error: "#dc3545",
+        success: "#28a745",
+        warning: "#ffc107",
+        muted: "#6c757d",
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/line-clamp")],
 };
