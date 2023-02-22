@@ -7,12 +7,14 @@ import Modal from "react-modal";
 import { customStyles } from "src/assets/customModal";
 import { toast } from "react-toastify";
 import AddNewEmployee from "./AddNew";
+
 import {
   addListEmployeeToLocal,
   findIndexOfEmployee,
   removeEmployee,
 } from "./FunctionEmployee";
 import EditEmployee from "./Edit";
+import { exportToCSV } from "./Export";
 
 const Employees = () => {
   useEffect(() => {
@@ -34,6 +36,8 @@ const Employees = () => {
   const [confirmCloseEdit, setConfirmCloseEdit] = useState(false);
 
   const [changed, setChanged] = useState(false);
+
+  const [showExport, setShowExport] = useState(false);
 
   return (
     <div className="w-auto">
@@ -193,6 +197,52 @@ const Employees = () => {
       </Modal>
       {/*End: Edit Employee Modal */}
 
+      {/*Start: Export Modal */}
+      <Modal
+        isOpen={showExport}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setShowExport(false);
+        }}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2>
+          Want to export{" "}
+          {selectEmployees.length <= 0 ? "all" : selectEmployees.length}?
+        </h2>
+        <p>If you click export, File will download after a few second! </p>
+        <div className="flex justify-end gap-4 mt-4">
+          <button
+            className="px-5 py-2.5 rounded-md border-[1px] "
+            onClick={() => {
+              setShowExport(false);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-5 py-2.5 bg-primary text-white rounded-md"
+            onClick={(e) => {
+              //delete
+              var tempListEmp: iEmployee[] = listEmpFromDb;
+              if (selectEmployees.length > 0) tempListEmp = selectEmployees;
+              exportToCSV(tempListEmp, "ListEmployee");
+              setShowExport(false);
+              // selectEmployees.map((curSelect) =>
+              //   removeEmployee(tempListEmp, curSelect)
+              // );
+              // addListEmployeeToLocal(tempListEmp);
+              // setSelectEmployees([]);
+              // setRenderLazy(!renderLazy);
+            }}
+          >
+            Export
+          </button>
+        </div>
+      </Modal>
+      {/*End: Export Modal*/}
+
       {/*Start: Content Employees List */}
       <div className="flex  items-center">
         <h1 className="flex-1 text-center">Employees List</h1>
@@ -235,6 +285,7 @@ const Employees = () => {
             data-tip={selectEmployees.length === 0 ? "Export all" : "Export"}
             data-for="exportEmployee"
             disabled={listEmpFromDb.length <= 0}
+            onClick={() => setShowExport(true)}
           >
             <DocumentArrowDown />
             <ReactTooltip id="exportEmployee" place="top" effect="solid" />
