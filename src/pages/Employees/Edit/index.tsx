@@ -1,22 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import Modal from "react-modal";
 import { toast } from "react-toastify";
-import { customStyles } from "src/assets/customModal";
 import { listCountry } from "src/data/country";
 import { iEmployee } from "src/DTO/Employee";
 import { addListEmployeeToLocal } from "../FunctionEmployee";
-interface iAddNewEmployeeProps extends React.HTMLProps<HTMLDivElement> {
+interface iEditEmployeeProps extends React.HTMLProps<HTMLDivElement> {
   isShow: boolean;
   setIsShow: (b: boolean) => void;
-  setConfirmCloseAdd: (b: boolean) => void;
+  setConfirmCloseEdit: (b: boolean) => void;
+  employee: iEmployee;
   listEmp: iEmployee[];
   setListEmp: (list: iEmployee[]) => void;
+  setListSelect: (list: iEmployee[]) => void;
+  changed: boolean;
+  setChanged: (b: boolean) => void;
 }
-const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
-  const { setConfirmCloseAdd, setIsShow, listEmp, setListEmp } = props;
+const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
+  const {
+    employee,
+    setConfirmCloseEdit,
+    setIsShow,
+    listEmp,
+    setListEmp,
+    changed,
+    setChanged,
+    setListSelect,
+  } = props;
 
-  const addNewUser = () => {
+  const editUser = () => {
     //#region Check logic
     console.log(_phoneNumber.length !== 10);
     if (_firstName.length <= 0) {
@@ -47,7 +58,8 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
     //#endregion Check logic
     else {
       if (_firstName !== undefined) {
-        let empTemp: iEmployee = {
+        //#region Create temp emp
+        let tempEmp: iEmployee = {
           employeeNumber: _idEmp,
           empFirstName: _firstName,
           empLastName: _lastName,
@@ -60,68 +72,75 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
           empZipCode: _zipCode,
           hourlyRate: _hourlyRate,
         };
+        //#endregion Create temp emp
         let tempList: iEmployee[] = listEmp;
-        tempList.push(empTemp);
+        var tempIndex = tempList.findIndex(
+          (i) => i.employeeNumber === tempEmp.employeeNumber
+        );
+        console.log("tempEmp", tempEmp);
+        console.log("tempList", tempList);
+        console.log("tempIndex", tempIndex);
+        if (tempIndex > -1) {
+          tempList[tempIndex] = tempEmp;
+        }
+        // tempList.map((item) => {
+        //   if (item.employeeNumber === tempEmp.employeeNumber) return tempEmp;
+        // });
+        // tempList.push(tempEmp);
+        // console.log(tempList);
+        // setListSelect([]);
         addListEmployeeToLocal(tempList);
-        // localStorage.setItem("listEmployee", JSON.stringify(tempList));
+        // // localStorage.setItem("listEmployee", JSON.stringify(tempList));
         setIsShow(false);
-        setListEmp(tempList);
-        toast.success("Add new employee success");
+        // setListEmp(tempList);
+        toast.success("Edit employee success");
       }
     }
   };
-  const _idEmp =
-    listEmp.length > 0 ? listEmp[listEmp.length - 1].employeeNumber + 1 : 0;
-  const [_firstName, _setFirstName] = useState("");
-  const [_lastName, _setLastName] = useState("");
-  const [_address, _setAddress] = useState("");
-  const [_city, _setCity] = useState("Hồ Chí Minh");
-  const [_state, _setState] = useState("");
-  const [_zipCode, _setZipCode] = useState("");
-  const [_phoneNumber, _setPhoneNumber] = useState("");
-  const [_position, _setPosition] = useState("");
-  const [_hourlyRate, _setHourlyRate] = useState(0);
-  const [_dateHired, _setDateHired] = useState(new Date());
+  const _idEmp = employee.employeeNumber || 0;
+  const [_firstName, _setFirstName] = useState(employee.empFirstName);
+  const [_lastName, _setLastName] = useState(employee.empLastName);
+  const [_address, _setAddress] = useState(employee.empStreetAddress);
+  const [_city, _setCity] = useState(employee.empCity);
+  const [_state, _setState] = useState(employee.empState);
+  const [_zipCode, _setZipCode] = useState(employee.empZipCode);
+  const [_phoneNumber, _setPhoneNumber] = useState(employee.empPhoneNumber);
+  const [_position, _setPosition] = useState(employee.empPosition);
+  const [_hourlyRate, _setHourlyRate] = useState(employee.hourlyRate);
+  const [_dateHired, _setDateHired] = useState(new Date(employee.dateHired));
 
-  const [_showAddConfirm, _setShowAddConfirm] = useState(false);
-
+  //#region Check changed?
+  useEffect(() => {
+    if (
+      _firstName === employee.empFirstName &&
+      _lastName === employee.empLastName &&
+      _address === employee.empStreetAddress &&
+      _city === employee.empCity &&
+      _state === employee.empState &&
+      _zipCode === employee.empZipCode &&
+      _phoneNumber === employee.empPhoneNumber &&
+      _position === employee.empPosition &&
+      _hourlyRate === employee.hourlyRate &&
+      _dateHired.toDateString() === employee.dateHired
+    )
+      setChanged(false);
+    else setChanged(true);
+  }, [
+    _firstName,
+    _lastName,
+    _address,
+    _city,
+    _state,
+    _zipCode,
+    _phoneNumber,
+    _position,
+    _hourlyRate,
+    _dateHired,
+  ]);
+  //#endregion Check changed?
   return (
     <div className="bg-transparent  px-4 pb-2 w-[80vw]">
       <h2 className="text-center pb-2">Add New Employee - ID: {_idEmp}</h2>
-      <Modal
-        isOpen={_showAddConfirm}
-        ariaHideApp={false}
-        onRequestClose={() => {
-          console.log("click out site?");
-          _setShowAddConfirm(true);
-        }}
-        style={customStyles}
-        contentLabel="Add Modal"
-      >
-        <h3>Add new employee!</h3>
-        <i className="text-sm">
-          Do u have any change? Confirm your decision...
-        </i>
-        <div className="flex justify-end items-center mt-4 gap-2">
-          <button
-            className="px-5 py-2.5 rounded-md border-[1px] "
-            onClick={() => {
-              _setShowAddConfirm(false);
-            }}
-          >
-            Edit
-          </button>
-          <button
-            className="px-5 py-2.5 bg-primary text-white rounded-md"
-            onClick={() => {
-              addNewUser();
-              _setShowAddConfirm(false);
-            }}
-          >
-            Add new
-          </button>
-        </div>
-      </Modal>
       <form>
         <div className="grid md:grid-cols-2 md:gap-4">
           <div className="relative z-0 w-full mb-6 group">
@@ -351,17 +370,18 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
             className="border-black border-[1px] font-medium px-5 py-2.5 rounded-md hover:bg-gray-200"
             onClick={(e) => {
               e.preventDefault();
-              setConfirmCloseAdd(true);
+              setConfirmCloseEdit(true);
             }}
           >
             Cancel
           </button>
           <button
             // type="submit"
-            className="text-white bg-primary hover:opacity-75 border-primary border-[1px] focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+            disabled={!changed}
+            className="text-white bg-primary hover:opacity-75 border-primary border-[1px] focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:bg-muted disabled:hover:opacity-100 disabled:border-muted "
             onClick={(e) => {
+              editUser();
               e.preventDefault();
-              addNewUser();
             }}
           >
             Submit
@@ -372,4 +392,4 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
   );
 };
 
-export default AddNewEmployee;
+export default EditEmployee;
