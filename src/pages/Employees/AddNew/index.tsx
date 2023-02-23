@@ -240,9 +240,10 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
               placeholder=" "
               value={_zipCode || 0}
               onChange={(e) => {
-                // _setZipCode(e.target.value.replace(/[^0-9]+/g, ""));
                 let temp = parseInt(e.target.value);
-                _setZipCode(temp);
+                console.log(isNaN(temp));
+                if (isNaN(temp)) _setZipCode(0);
+                else _setZipCode(temp);
               }}
               required
             />
@@ -312,7 +313,9 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
               onChange={(e) => {
                 try {
                   let temp = parseInt(e.target.value);
-                  _setHourlyRate(temp);
+                  console.log(isNaN(temp));
+                  if (isNaN(temp)) _setHourlyRate(0);
+                  else _setHourlyRate(temp);
                 } catch {}
               }}
               required

@@ -488,7 +488,6 @@ const Employees = () => {
                 toast.error("Error Check again");
               } else {
                 selectEmployees.forEach((curSelect) => {
-                  // console.log(curSelect);
                   removeEmployee(tempListEmp, curSelect);
                 });
                 addListEmployeeToLocal(tempListEmp);

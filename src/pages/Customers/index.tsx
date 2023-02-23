@@ -23,6 +23,7 @@ import {
 import Modal from "react-modal";
 import { customStyles } from "src/assets/customModal";
 import AddNewCus from "./AddNew";
+import EditCustomer from "./Edit";
 
 const Customers = () => {
   const [selectCustomer, setSelectCustomer] = useState<iCustomer[]>([]);
@@ -32,7 +33,7 @@ const Customers = () => {
   const [isShowAdd, setShowAdd] = useState(false);
   const [confirmCloseAdd, setConfirmCloseAdd] = useState(false);
 
-  const [showEdit, setShowEdit] = useState(false);
+  const [isShowEdit, setShowEdit] = useState(false);
   const [confirmCloseEdit, setConfirmCloseEdit] = useState(false);
 
   const [changed, setChanged] = useState(false);
@@ -52,8 +53,299 @@ const Customers = () => {
   }, []);
 
   useEffect(() => {
+    var fakeCallListTemp = localStorage.getItem("listCustomer");
+    if (fakeCallListTemp) {
+      var tempListEmpFromLocal = JSON.parse(fakeCallListTemp) as iCustomer[];
+      var resultList = tempListEmpFromLocal;
+      let typeFilter = typeOfFilter.label;
+      //#region Sort logic - can write function to clean code - shorter
+      if (colFilterSelected === "ID") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.customerId < e2.customerId
+              ? -1
+              : e1.customerId > e2.customerId
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.customerId < e2.customerId
+              ? 1
+              : e1.customerId > e2.customerId
+              ? -1
+              : 0
+          );
+        }
+        if (findString.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (item.customerId.toString().includes(findStringFakeCallApi))
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "First Name") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custFirstName < e2.custFirstName
+              ? -1
+              : e1.custFirstName > e2.custFirstName
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custFirstName < e2.custFirstName
+              ? 1
+              : e1.custFirstName > e2.custFirstName
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custFirstName
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "Last Name") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custLastName < e2.custLastName
+              ? -1
+              : e1.custLastName > e2.custLastName
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custLastName < e2.custLastName
+              ? 1
+              : e1.custLastName > e2.custLastName
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custLastName
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "Street Address") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custStreetAddress < e2.custStreetAddress
+              ? -1
+              : e1.custStreetAddress > e2.custStreetAddress
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custStreetAddress < e2.custStreetAddress
+              ? 1
+              : e1.custStreetAddress > e2.custStreetAddress
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custStreetAddress
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "City") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custCity < e2.custCity ? -1 : e1.custCity > e2.custCity ? 1 : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custCity < e2.custCity ? 1 : e1.custCity > e2.custCity ? -1 : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custCity
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "State") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custState < e2.custState
+              ? -1
+              : e1.custState > e2.custState
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custState < e2.custState
+              ? 1
+              : e1.custState > e2.custState
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custState
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "Zip Code") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custZipCode < e2.custZipCode
+              ? -1
+              : e1.custZipCode > e2.custZipCode
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custZipCode < e2.custZipCode
+              ? 1
+              : e1.custZipCode > e2.custZipCode
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custZipCode
+                .toString()
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "Phone") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custPhone < e2.custPhone
+              ? -1
+              : e1.custPhone > e2.custPhone
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custPhone < e2.custPhone
+              ? 1
+              : e1.custPhone > e2.custPhone
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custPhone
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      } else if (colFilterSelected === "Email") {
+        if (typeFilter === "Increase") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custEmailAddress < e2.custEmailAddress
+              ? -1
+              : e1.custEmailAddress > e2.custEmailAddress
+              ? 1
+              : 0
+          );
+        } else if (typeFilter === "Decrease") {
+          resultList = tempListEmpFromLocal.sort((e1, e2) =>
+            e1.custEmailAddress < e2.custEmailAddress
+              ? 1
+              : e1.custEmailAddress > e2.custEmailAddress
+              ? -1
+              : 0
+          );
+        }
+        if (findStringFakeCallApi.length > 0) {
+          let temp: iCustomer[] = [];
+          resultList.forEach((item) => {
+            if (
+              item.custEmailAddress
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
+              temp.push(item);
+          });
+          resultList = temp;
+        }
+      }
+
+      //#endregion Sort logic - can write function to clean code - shorter
+      setListCusFromDb(resultList);
+
+      // toast(findStringFakeCallApi);
+    } else {
+      toast.error("Can't fetch data from server, please contact IT service");
+    }
+  }, [typeOfFilter, findStringFakeCallApi]); //colFilterSelected
+
+  useEffect(() => {
+    setTypeOfFilter(listFilter[0]);
+  }, [colFilterSelected]);
+
+  useEffect(() => {
     if (typing === undefined) setTyping(false);
-  }, [typing]);
+    else setTyping(true);
+    const delayToTyping = setTimeout(() => {
+      // console.log(searchTerm)
+      setTyping(false);
+      setFindStringFakeCallApi(findString);
+      // Send Axios request here
+    }, 1500);
+
+    return () => clearTimeout(delayToTyping);
+  }, [findString]);
+
   return (
     <div>
       {/*Start: Add New Modal */}
@@ -155,6 +447,63 @@ const Customers = () => {
         </div>
       </Modal>
       {/*End: Delete Modal*/}
+
+      {/*Start: Edit Modal  */}
+      <Modal
+        isOpen={isShowEdit}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setConfirmCloseEdit(true);
+        }}
+        style={customStyles}
+        contentLabel="Add Modal"
+      >
+        <EditCustomer
+          isShow={isShowEdit}
+          setIsShow={setShowEdit}
+          setConfirmCloseEdit={setConfirmCloseEdit}
+          customer={selectCustomer[0]}
+          listCus={listCusFromDb}
+          setListCus={setListCusFromDb}
+          setListSelect={setSelectCustomer}
+          changed={changed}
+          setChanged={setChanged}
+        />
+        <Modal
+          isOpen={confirmCloseEdit}
+          ariaHideApp={false}
+          onRequestClose={() => {
+            setConfirmCloseEdit(false);
+          }}
+          style={customStyles}
+          contentLabel="Stop add, Are your sure about that?"
+        >
+          <h3>Stop add, Are your sure about that?</h3>
+          <i className="text-sm">
+            If you stopped, you can't restore it after do it.
+          </i>
+          <div className="flex justify-end items-center mt-4 gap-2">
+            <button
+              className="px-5 py-2.5 rounded-md border-[1px] "
+              onClick={() => {
+                setConfirmCloseEdit(false);
+              }}
+            >
+              No
+            </button>
+            <button
+              className="px-5 py-2.5 bg-primary text-white rounded-md"
+              onClick={() => {
+                setShowEdit(false);
+                setConfirmCloseEdit(false);
+              }}
+            >
+              Yes
+            </button>
+          </div>
+        </Modal>
+      </Modal>
+      {/*End: Edit Modal */}
 
       <div className="flex  items-center w-auto">
         <h1 className="text-center my-4">Customer List</h1>
@@ -287,9 +636,11 @@ const Customers = () => {
           {!listCusFromDb ||
           listCusFromDb === null ||
           listCusFromDb.length <= 0 ? (
-            <tbody className="text-center absolute w-full py-5 bg-gray-200">
+            <tbody className=" absolute w-full py-10 bg-gray-200">
               <tr>
-                <td> Have no customer to show</td>
+                <td className="text-center w-full absolute pb-5 text-base">
+                  Have no customer to show
+                </td>
               </tr>
             </tbody>
           ) : (
@@ -319,9 +670,7 @@ const Customers = () => {
                   <td
                     className={
                       "px-3.5 py-2  text-center " +
-                      (colFilterSelected === "Employee Number"
-                        ? " bg-primaryHover "
-                        : null)
+                      (colFilterSelected === "ID" ? " bg-primaryHover " : null)
                     }
                   >
                     {findIndexOfCustomer(selectCustomer, item) !== -1 ? (
@@ -393,7 +742,7 @@ const Customers = () => {
                   <td
                     className={
                       "px-3.5 py-2 " +
-                      (colFilterSelected === "Phone Number"
+                      (colFilterSelected === "Phone"
                         ? " bg-primaryHover"
                         : null)
                     }
@@ -403,7 +752,7 @@ const Customers = () => {
                   <td
                     className={
                       "px-3.5 py-2 " +
-                      (colFilterSelected === "Position"
+                      (colFilterSelected === "Email"
                         ? " bg-primaryHover"
                         : null)
                     }

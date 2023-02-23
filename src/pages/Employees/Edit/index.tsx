@@ -142,7 +142,7 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
   //#endregion Check changed?
   return (
     <div className="bg-transparent  px-4 pb-2 w-[80vw]">
-      <h2 className="text-center pb-2">Add New Employee - ID: {_idEmp}</h2>
+      <h2 className="text-center pb-2">Edit Employee - ID: {_idEmp}</h2>
       <form>
         <div className="grid md:grid-cols-2 md:gap-4">
           <div className="relative z-0 w-full mb-6 group">
@@ -260,7 +260,10 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
               placeholder=" "
               defaultValue={_zipCode || 0}
               onChange={(e) => {
-                _setZipCode(parseInt(e.target.value));
+                let temp = parseInt(e.target.value);
+                console.log(isNaN(temp));
+                if (isNaN(temp)) _setZipCode(0);
+                else _setZipCode(temp);
               }}
               required
             />
@@ -330,8 +333,9 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
               onChange={(e) => {
                 try {
                   let temp = parseInt(e.target.value);
-                  console.log(temp);
-                  _setHourlyRate(temp);
+                  console.log(isNaN(temp));
+                  if (isNaN(temp)) _setHourlyRate(0);
+                  else _setHourlyRate(temp);
                 } catch {}
               }}
               required
