@@ -4,7 +4,8 @@ export interface iCustomer {
   custLastName: string;
   custStreetAddress: string;
   custCity: string;
-  custZipCode: string;
-  custPhone: number;
+  custState: string;
+  custZipCode: number;
+  custPhone: string;
   custEmailAddress: string;
 }

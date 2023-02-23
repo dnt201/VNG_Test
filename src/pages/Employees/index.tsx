@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import { listEmployees } from "src/data/customers";
 import {
   Check,
@@ -25,7 +25,7 @@ import {
 import EditEmployee from "./Edit";
 import { exportPDF, exportToCSV } from "./Export";
 import Select from "react-select";
-import { listFilter } from "src/data/customers";
+import { iTh, listFilter } from "src/data/interface";
 import { prettyMoney } from "src/prototype";
 import { ThreeDots } from "react-loader-spinner";
 
@@ -84,7 +84,7 @@ const Employees = () => {
         if (findString.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
-            if (item.employeeNumber.toString().includes(findString))
+            if (item.employeeNumber.toString().includes(findStringFakeCallApi))
               temp.push(item);
           });
           resultList = temp;
@@ -107,11 +107,13 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
-              item.empFirstName.toLowerCase().includes(findString.toLowerCase())
+              item.empFirstName
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -135,11 +137,13 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
-              item.empLastName.toLowerCase().includes(findString.toLowerCase())
+              item.empLastName
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -163,13 +167,13 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
               item.empStreetAddress
                 .toLowerCase()
-                .includes(findString.toLowerCase())
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -185,10 +189,14 @@ const Employees = () => {
             e1.empCity < e2.empCity ? 1 : e1.empCity > e2.empCity ? -1 : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
-            if (item.empCity.toLowerCase().includes(findString.toLowerCase()))
+            if (
+              item.empCity
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
               temp.push(item);
           });
           resultList = temp;
@@ -203,10 +211,14 @@ const Employees = () => {
             e1.empState < e2.empState ? 1 : e1.empState > e2.empState ? -1 : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
-            if (item.empState.toLowerCase().includes(findString.toLowerCase()))
+            if (
+              item.empState
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
               temp.push(item);
           });
           resultList = temp;
@@ -229,14 +241,14 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
               item.empZipCode
                 .toString()
                 .toLowerCase()
-                .includes(findString.toLowerCase())
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -260,13 +272,13 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
               item.empPhoneNumber
                 .toLowerCase()
-                .includes(findString.toLowerCase())
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -290,11 +302,13 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
-              item.empPosition.toLowerCase().includes(findString.toLowerCase())
+              item.empPosition
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -318,14 +332,14 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
             if (
               item.hourlyRate
                 .toString()
                 .toLowerCase()
-                .includes(findString.toLowerCase())
+                .includes(findStringFakeCallApi.toLowerCase())
             )
               temp.push(item);
           });
@@ -349,10 +363,14 @@ const Employees = () => {
               : 0
           );
         }
-        if (findString.length > 0) {
+        if (findStringFakeCallApi.length > 0) {
           let temp: iEmployee[] = [];
           resultList.forEach((item) => {
-            if (item.dateHired.toLowerCase().includes(findString.toLowerCase()))
+            if (
+              item.dateHired
+                .toLowerCase()
+                .includes(findStringFakeCallApi.toLowerCase())
+            )
               temp.push(item);
           });
           resultList = temp;
@@ -366,7 +384,7 @@ const Employees = () => {
     } else {
       toast.error("Can't fetch data from server, please contact IT service");
     }
-  }, [typeOfFilter, findStringFakeCallApi]);
+  }, [typeOfFilter, findStringFakeCallApi]); //colFilterSelected
   useEffect(() => {
     setTypeOfFilter(listFilter[0]);
   }, [colFilterSelected]);
@@ -385,7 +403,7 @@ const Employees = () => {
   }, [findString]);
 
   return (
-    <div className="  ">
+    <div className=" ">
       {/*Start: Add New Modal */}
       <Modal
         isOpen={isOpenAdd}
@@ -477,6 +495,7 @@ const Employees = () => {
                 setSelectEmployees([]);
                 setRenderLazy(!renderLazy);
               }
+              toast.success("Delete success! ");
               setIsOpenDelete(false);
             }}
           >
@@ -898,10 +917,6 @@ const Employees = () => {
 
 export default Employees;
 
-interface iTh {
-  title: string;
-  value: string;
-}
 const listTh: iTh[] = [
   { title: "Employee Number", value: "id" },
   { title: "First Name", value: "firstName" },
