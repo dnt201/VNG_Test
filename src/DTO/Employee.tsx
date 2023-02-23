@@ -5,7 +5,7 @@ export interface iEmployee {
   empStreetAddress: string;
   empCity: string;
   empState: string;
-  empZipCode: string;
+  empZipCode: number;
   empPhoneNumber: string;
   empPosition: string;
   hourlyRate: number;

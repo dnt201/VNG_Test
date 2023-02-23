@@ -1,3 +1,3 @@
-String.prototype.prettyMoney = function () {
-  return this.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+export const prettyMoney = (s: string) => {
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };

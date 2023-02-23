@@ -1,5 +1,19 @@
 import { iEmployee } from "src/DTO/Employee";
 
+export interface iOption {
+  value: string;
+  label: string;
+}
+
+export var listFilter: iOption[] = [
+  { value: "not", label: "Not set" },
+  {
+    value: "inc",
+    label: "Increase",
+  },
+  { value: "dec", label: "Decrease" },
+];
+
 export var listEmployees: iEmployee[] = [
   {
     employeeNumber: 1,
@@ -8,7 +22,7 @@ export var listEmployees: iEmployee[] = [
     empStreetAddress: "7 Đường 19 An Bình Quận 2",
     empCity: "Thủ Đức",
     empState: "Hồ Chí Minh",
-    empZipCode: "100000",
+    empZipCode: 100000,
     empPhoneNumber: "0368689201",
     empPosition: "Nhân viên",
     hourlyRate: 50000,
@@ -21,7 +35,7 @@ export var listEmployees: iEmployee[] = [
     empStreetAddress: "7 Đường 19 An Bình Quận 2",
     empCity: "Thủ Đức",
     empState: "Hồ Chí Minh",
-    empZipCode: "100000",
+    empZipCode: 100000,
     empPhoneNumber: "0368689201",
     empPosition: "Nhân viên",
     hourlyRate: 50000,
@@ -34,7 +48,7 @@ export var listEmployees: iEmployee[] = [
     empStreetAddress: "7 Đường 19 An Bình Quận 2",
     empCity: "Thủ Đức",
     empState: "Hồ Chí Minh",
-    empZipCode: "100000",
+    empZipCode: 100000,
     empPhoneNumber: "0368689201",
     empPosition: "Nhân viên",
     hourlyRate: 50000,

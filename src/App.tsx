@@ -6,7 +6,7 @@ const App = () => {
   const [_mini, _setMini] = useState(false);
   const [_lazy, _setLazy] = useState(false);
   return (
-    <div className="flex relative">
+    <div className="flex relative h-screen ">
       <NavLeft
         className="w-[240px] z-10 "
         mini={_mini}
@@ -16,7 +16,7 @@ const App = () => {
       />
       <div
         className={
-          "relative z-0  flex-1 overflow-x-scroll duration-300 p-1" +
+          "relative z-0  flex-1  overflow-y-hidden duration-300 p-1 pr-0" +
           (_mini && _lazy === false ? " -left-[180px]  " : " left-0  ") +
           (_lazy ? " left-0 w-full " : null)
         }

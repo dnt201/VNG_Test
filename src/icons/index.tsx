@@ -13,6 +13,10 @@ import Trash from "./Trash";
 import Wrench from "./Wrench";
 import DocumentArrowDown from "./DocumentArrowDown";
 import Check from "./Check";
+import Excel from "./Excel";
+import Magnifying from "./Magnifying";
+import PickAll from "./PickAll";
+import UnPickAll from "./UnPickAll";
 export {
   Customers,
   Employees,
@@ -29,4 +33,8 @@ export {
   Wrench,
   DocumentArrowDown,
   Check,
+  Excel,
+  Magnifying,
+  PickAll,
+  UnPickAll,
 };

@@ -1,10 +1,11 @@
 declare interface String {
-  prettyMoney: () => string;
+  prettyMoney: () => String;
 }
 declare module "*.png";
 declare module "*.svg";
 declare module "*.jpeg";
 declare module "*.jpg";
+declare module "*.ttf";
 
 declare interface Array<T> {
   contains: (obj: T) => boolean;

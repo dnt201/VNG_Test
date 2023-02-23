@@ -34,8 +34,8 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
     } else if (_state.length <= 0) {
       toast.error("State is required");
       document.getElementById("floating_state")?.focus();
-    } else if (_zipCode.length <= 0) {
-      toast.error("Zip code is required");
+    } else if (_zipCode === 0) {
+      toast.error("Zip code is illegal ");
       document.getElementById("floating_zipCode")?.focus();
     } else if (_phoneNumber.length !== 10) {
       toast.error("Phone number should be 10 digit number!");
@@ -77,7 +77,7 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
   const [_address, _setAddress] = useState("");
   const [_city, _setCity] = useState("Hồ Chí Minh");
   const [_state, _setState] = useState("");
-  const [_zipCode, _setZipCode] = useState("");
+  const [_zipCode, _setZipCode] = useState(0);
   const [_phoneNumber, _setPhoneNumber] = useState("");
   const [_position, _setPosition] = useState("");
   const [_hourlyRate, _setHourlyRate] = useState(0);
@@ -234,12 +234,15 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
             <input
               type="text"
               name="floating_zipCode"
+              maxLength={7}
               id="floating_zipCode"
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300     focus:outline-none focus:ring-0 focus:border-primary peer"
               placeholder=" "
-              defaultValue={_zipCode}
+              value={_zipCode || 0}
               onChange={(e) => {
-                _setZipCode(e.target.value);
+                // _setZipCode(e.target.value.replace(/[^0-9]+/g, ""));
+                let temp = parseInt(e.target.value);
+                _setZipCode(temp);
               }}
               required
             />
@@ -309,7 +312,6 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
               onChange={(e) => {
                 try {
                   let temp = parseInt(e.target.value);
-                  console.log(temp);
                   _setHourlyRate(temp);
                 } catch {}
               }}

@@ -1,6 +1,6 @@
 import { iEmployee } from "src/DTO/Employee";
 export function removeEmployee(array: iEmployee[], elem: iEmployee) {
-  var index = array.indexOf(elem);
+  var index = findIndexOfEmployee(array, elem);
   if (index > -1) {
     array.splice(index, 1);
   }

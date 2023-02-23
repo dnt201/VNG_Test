@@ -21,10 +21,8 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
     setConfirmCloseEdit,
     setIsShow,
     listEmp,
-    setListEmp,
     changed,
     setChanged,
-    setListSelect,
   } = props;
 
   const editUser = () => {
@@ -45,7 +43,7 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
     } else if (_state.length <= 0) {
       toast.error("State is required");
       document.getElementById("floating_state")?.focus();
-    } else if (_zipCode.length <= 0) {
+    } else if (_zipCode.toString().length <= 0) {
       toast.error("Zip code is required");
       document.getElementById("floating_zipCode")?.focus();
     } else if (_phoneNumber.length !== 10) {
@@ -83,16 +81,9 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
         if (tempIndex > -1) {
           tempList[tempIndex] = tempEmp;
         }
-        // tempList.map((item) => {
-        //   if (item.employeeNumber === tempEmp.employeeNumber) return tempEmp;
-        // });
-        // tempList.push(tempEmp);
-        // console.log(tempList);
-        // setListSelect([]);
+
         addListEmployeeToLocal(tempList);
-        // // localStorage.setItem("listEmployee", JSON.stringify(tempList));
         setIsShow(false);
-        // setListEmp(tempList);
         toast.success("Edit employee success");
       }
     }
@@ -136,6 +127,17 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
     _position,
     _hourlyRate,
     _dateHired,
+    employee.dateHired,
+    employee.empFirstName,
+    employee.empLastName,
+    employee.empPhoneNumber,
+    employee.empPosition,
+    employee.empState,
+    employee.empStreetAddress,
+    employee.empZipCode,
+    employee.hourlyRate,
+    employee.empCity,
+    setChanged,
   ]);
   //#endregion Check changed?
   return (
@@ -256,9 +258,9 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
               id="floating_zipCode"
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300     focus:outline-none focus:ring-0 focus:border-primary peer"
               placeholder=" "
-              defaultValue={_zipCode}
+              defaultValue={_zipCode || 0}
               onChange={(e) => {
-                _setZipCode(e.target.value);
+                _setZipCode(parseInt(e.target.value));
               }}
               required
             />
