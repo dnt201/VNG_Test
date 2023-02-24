@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { iCustomer } from "src/DTO/Customers";
 import { iEmployee } from "src/DTO/Employee";
 import { iOrders } from "src/DTO/Orders";
-import { findExistCus } from "./FunctionDashBoard";
+import BarChart from "./BarChart";
+import { findExist } from "./FunctionDashBoard";
 export interface iCount {
   id: number;
   count: number;
@@ -13,6 +14,7 @@ const DashBoard = () => {
   const [listOrder, setListOrder] = useState<iOrders[]>([]);
 
   const [listCusTop5, setListCusTop5] = useState<iCount[]>([]);
+  const [listEmpTop5, setListEmpTop5] = useState<iCount[]>([]);
 
   useEffect(() => {
     let fakeCallListEmp = localStorage.getItem("listEmployee");
@@ -28,20 +30,35 @@ const DashBoard = () => {
       setListOrder(tempListOrder);
 
       var tempTop10: iCount[] = [];
+      var tempTopEmp5: iCount[] = [];
       if (tempListOrder.length > 0) {
         tempTop10.push({ id: tempListOrder[0].customerId, count: 1 });
+        tempTopEmp5.push({ id: tempListOrder[0].employeeNumber, count: 1 });
         for (var i = 1; i < tempListOrder.length; i++) {
-          let checkExist = findExistCus(tempTop10, tempListOrder[i].customerId);
+          let checkExist = findExist(tempTop10, tempListOrder[i].customerId);
+          let checkExistEmp = findExist(
+            tempTopEmp5,
+            tempListOrder[i].employeeNumber
+          );
           if (checkExist === -1) {
             tempTop10.push({ id: tempListOrder[i].customerId, count: 1 });
           } else {
             tempTop10[checkExist].count++;
           }
+          if (checkExistEmp === -1) {
+            tempTopEmp5.push({ id: tempListOrder[i].employeeNumber, count: 1 });
+          } else {
+            tempTopEmp5[checkExistEmp].count++;
+          }
         }
         var resultList = tempTop10.sort((e1, e2) =>
           e1.count < e2.count ? 1 : e1.count > e2.count ? -1 : 0
         );
+        var resultListEmpTop5 = tempTopEmp5.sort((e1, e2) =>
+          e1.count < e2.count ? 1 : e1.count > e2.count ? -1 : 0
+        );
         setListCusTop5(resultList);
+        setListEmpTop5(resultListEmpTop5);
       }
     }
   }, []);
@@ -89,50 +106,18 @@ const DashBoard = () => {
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 py-4 flex-1 ">
-        <div className="flex flex-col h-auto ">
-          <div className="flex-1 pt-2 flex items-end gap-6 border-b-[1.5px] border-black pl-2 relative ">
-            {listCusTop5 && listCusTop5.length >= 0 && (
-              <span className="absolute right-0 font-semibold text-xs">
-                Id Customer
-              </span>
-            )}
-            {!listCusTop5 || listCusTop5.length <= 0 ? (
-              <i className="text-center w-full pb-2 text-sm">
-                No data to show!
-              </i>
-            ) : (
-              listCusTop5.map((e, index) => (
-                <div
-                  key={e.id}
-                  style={{
-                    height:
-                      index === 0
-                        ? " 90% "
-                        : `  ${(e.count / listCusTop5[0].count) * 90}% `,
-                  }}
-                  className={" px-2 "}
-                >
-                  <div className="px-[12px] bg-gray-300 h-full relative">
-                    <span className="absolute -bottom-3 translate-y-1/2 -translate-x-1/2 left-1/2 text-sm font-semibold">
-                      {e.id}
-                    </span>
-                    <span className="absolute -top-3 translate-y-1/2 -translate-x-1/2 left-1/2 text-sm">
-                      {e.count}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-          <h6 className=" mt-5 text-center">
-            Top 5 customer have the most orders
-          </h6>
-        </div>
-        <div>
-          <div className="flex-1 ">a</div>
-          <h6>Top 5 customer have the most orders</h6>
-        </div>
+      <div className="grid grid-cols-2 gap-8 py-4 flex-1 ">
+        <BarChart
+          listData={listCusTop5}
+          xLabel={"ID Customer"}
+          mainLabel={"Top 5 customer have the most orders"}
+        />
+
+        <BarChart
+          listData={listEmpTop5}
+          xLabel={"ID Employee"}
+          mainLabel={"Top 5 employee have the most orders"}
+        />
       </div>
     </div>
   );
