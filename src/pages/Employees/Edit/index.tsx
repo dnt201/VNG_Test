@@ -22,12 +22,13 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
     setIsShow,
     listEmp,
     changed,
+    setListSelect,
     setChanged,
   } = props;
 
   const editUser = () => {
     //#region Check logic
-    console.log(_phoneNumber.length !== 10);
+
     if (_firstName.length <= 0) {
       toast.error("First name is required");
       document.getElementById("floating_first_name")?.focus();
@@ -55,37 +56,32 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
     }
     //#endregion Check logic
     else {
-      if (_firstName !== undefined) {
-        //#region Create temp emp
-        let tempEmp: iEmployee = {
-          employeeNumber: _idEmp,
-          empFirstName: _firstName,
-          empLastName: _lastName,
-          empStreetAddress: _address,
-          empPhoneNumber: _phoneNumber,
-          dateHired: _dateHired.toDateString(),
-          empCity: _city,
-          empPosition: _position,
-          empState: _state,
-          empZipCode: _zipCode,
-          hourlyRate: _hourlyRate,
-        };
-        //#endregion Create temp emp
-        let tempList: iEmployee[] = listEmp;
-        var tempIndex = tempList.findIndex(
-          (i) => i.employeeNumber === tempEmp.employeeNumber
-        );
-        console.log("tempEmp", tempEmp);
-        console.log("tempList", tempList);
-        console.log("tempIndex", tempIndex);
-        if (tempIndex > -1) {
-          tempList[tempIndex] = tempEmp;
-        }
-
+      //#region Create temp emp
+      let tempEmp: iEmployee = {
+        employeeNumber: _idEmp,
+        empFirstName: _firstName,
+        empLastName: _lastName,
+        empStreetAddress: _address,
+        empPhoneNumber: _phoneNumber,
+        dateHired: _dateHired.toDateString(),
+        empCity: _city,
+        empPosition: _position,
+        empState: _state,
+        empZipCode: _zipCode,
+        hourlyRate: _hourlyRate,
+      };
+      //#endregion Create temp emp
+      let tempList: iEmployee[] = listEmp;
+      var tempIndex = tempList.findIndex(
+        (i) => i.employeeNumber === tempEmp.employeeNumber
+      );
+      if (tempIndex > -1) {
+        tempList[tempIndex] = tempEmp;
         addListEmployeeToLocal(tempList);
         setIsShow(false);
         toast.success("Edit employee success");
-      }
+        setListSelect([tempEmp]);
+      } else toast.success("Edit employee error");
     }
   };
   const _idEmp = employee.employeeNumber || 0;
@@ -261,7 +257,7 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
               defaultValue={_zipCode || 0}
               onChange={(e) => {
                 let temp = parseInt(e.target.value);
-                console.log(isNaN(temp));
+
                 if (isNaN(temp)) _setZipCode(0);
                 else _setZipCode(temp);
               }}
@@ -333,7 +329,7 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
               onChange={(e) => {
                 try {
                   let temp = parseInt(e.target.value);
-                  console.log(isNaN(temp));
+
                   if (isNaN(temp)) _setHourlyRate(0);
                   else _setHourlyRate(temp);
                 } catch {}
@@ -359,7 +355,6 @@ const EditEmployee: React.FC<iEditEmployeeProps> = (props) => {
                   toast.error("Selected date greater than current date!");
                 } else {
                   _setDateHired(date);
-                  console.log(date);
                 }
               }}
             />

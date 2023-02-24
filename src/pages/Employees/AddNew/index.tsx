@@ -18,7 +18,7 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
 
   const addNewUser = () => {
     //#region Check logic
-    console.log(_phoneNumber.length !== 10);
+
     if (_firstName.length <= 0) {
       toast.error("First name is required");
       document.getElementById("floating_first_name")?.focus();
@@ -46,28 +46,26 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
     }
     //#endregion Check logic
     else {
-      if (_firstName !== undefined) {
-        let empTemp: iEmployee = {
-          employeeNumber: _idEmp,
-          empFirstName: _firstName,
-          empLastName: _lastName,
-          empStreetAddress: _address,
-          empPhoneNumber: _phoneNumber,
-          dateHired: _dateHired.toDateString(),
-          empCity: _city,
-          empPosition: _position,
-          empState: _state,
-          empZipCode: _zipCode,
-          hourlyRate: _hourlyRate,
-        };
-        let tempList: iEmployee[] = listEmp;
-        tempList.push(empTemp);
-        addListEmployeeToLocal(tempList);
-        // localStorage.setItem("listEmployee", JSON.stringify(tempList));
-        setIsShow(false);
-        setListEmp(tempList);
-        toast.success("Add new employee success");
-      }
+      let empTemp: iEmployee = {
+        employeeNumber: _idEmp,
+        empFirstName: _firstName,
+        empLastName: _lastName,
+        empStreetAddress: _address,
+        empPhoneNumber: _phoneNumber,
+        dateHired: _dateHired.toDateString(),
+        empCity: _city,
+        empPosition: _position,
+        empState: _state,
+        empZipCode: _zipCode,
+        hourlyRate: _hourlyRate,
+      };
+      let tempList: iEmployee[] = listEmp;
+      tempList.push(empTemp);
+      addListEmployeeToLocal(tempList);
+      // localStorage.setItem("listEmployee", JSON.stringify(tempList));
+      setIsShow(false);
+      setListEmp(tempList);
+      toast.success("Add new employee success");
     }
   };
   const _idEmp =
@@ -92,7 +90,6 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
         isOpen={_showAddConfirm}
         ariaHideApp={false}
         onRequestClose={() => {
-          console.log("click out site?");
           _setShowAddConfirm(true);
         }}
         style={customStyles}
@@ -241,7 +238,7 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
               value={_zipCode || 0}
               onChange={(e) => {
                 let temp = parseInt(e.target.value);
-                console.log(isNaN(temp));
+
                 if (isNaN(temp)) _setZipCode(0);
                 else _setZipCode(temp);
               }}
@@ -313,7 +310,7 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
               onChange={(e) => {
                 try {
                   let temp = parseInt(e.target.value);
-                  console.log(isNaN(temp));
+
                   if (isNaN(temp)) _setHourlyRate(0);
                   else _setHourlyRate(temp);
                 } catch {}
@@ -339,7 +336,6 @@ const AddNewEmployee: React.FC<iAddNewEmployeeProps> = (props) => {
                   toast.error("Selected date greater than current date!");
                 } else {
                   _setDateHired(date);
-                  console.log(date);
                 }
               }}
             />

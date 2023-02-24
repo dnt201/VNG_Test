@@ -24,6 +24,9 @@ import Modal from "react-modal";
 import { customStyles } from "src/assets/customModal";
 import AddNewCus from "./AddNew";
 import EditCustomer from "./Edit";
+import { exportPDF, exportToCSV } from "../Customers/Export";
+import { addListOrderToLocal, removeOrder } from "../Orders/FunctionOrder";
+import { iOrders } from "src/DTO/Orders";
 
 const Customers = () => {
   const [selectCustomer, setSelectCustomer] = useState<iCustomer[]>([]);
@@ -35,6 +38,7 @@ const Customers = () => {
 
   const [isShowEdit, setShowEdit] = useState(false);
   const [confirmCloseEdit, setConfirmCloseEdit] = useState(false);
+  const [showExport, setShowExport] = useState(false);
 
   const [changed, setChanged] = useState(false);
 
@@ -44,13 +48,31 @@ const Customers = () => {
   const [findStringFakeCallApi, setFindStringFakeCallApi] = useState("");
   const [typing, setTyping] = useState<boolean | undefined>();
 
-  useEffect(() => {
-    let fakeCallListTemp = localStorage.getItem("listCustomer");
-    if (fakeCallListTemp) {
-      var tempListEmpFromLocal = JSON.parse(fakeCallListTemp) as iCustomer[];
-      setListCusFromDb(tempListEmpFromLocal);
+  const deleteCustomer = async () => {
+    var jsonListOrder = localStorage.getItem("listOrder");
+    if (jsonListOrder) {
+      var listOrderFromDb = JSON.parse(jsonListOrder) as iOrders[];
+      var tempForeach = [...listOrderFromDb] as iOrders[];
+      let tempListCus: iCustomer[] = listCusFromDb;
+      if (selectCustomer.length <= 0) {
+        toast.error("Error check again");
+      } else {
+        selectCustomer.forEach((curSelect) => {
+          tempForeach.forEach((o) => {
+            if (o.customerId === curSelect.customerId) {
+              removeOrder(listOrderFromDb, o);
+            }
+          });
+          removeCustomer(tempListCus, curSelect);
+        });
+        addListOrderToLocal(listOrderFromDb);
+        addListCustomerToLocal(tempListCus);
+        setSelectCustomer([]);
+      }
+      toast.success("Delete success!");
+      setShowDelete(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     var fakeCallListTemp = localStorage.getItem("listCustomer");
@@ -337,7 +359,6 @@ const Customers = () => {
     if (typing === undefined) setTyping(false);
     else setTyping(true);
     const delayToTyping = setTimeout(() => {
-      // console.log(searchTerm)
       setTyping(false);
       setFindStringFakeCallApi(findString);
       // Send Axios request here
@@ -353,7 +374,6 @@ const Customers = () => {
         isOpen={isShowAdd}
         ariaHideApp={false}
         onRequestClose={() => {
-          console.log("click out site?");
           setConfirmCloseAdd(true);
         }}
         style={customStyles}
@@ -427,19 +447,7 @@ const Customers = () => {
             className="px-5 py-2.5 bg-primary text-white rounded-md"
             onClick={() => {
               //delete
-              let tempListCus: iCustomer[] = listCusFromDb;
-              if (selectCustomer.length <= 0) {
-                toast.error("Error Check again");
-              } else {
-                selectCustomer.forEach((curSelect) => {
-                  // console.log(curSelect);
-                  removeCustomer(tempListCus, curSelect);
-                });
-                addListCustomerToLocal(tempListCus);
-                setSelectCustomer([]);
-              }
-              toast.success("Delete success!");
-              setShowDelete(false);
+              deleteCustomer();
             }}
           >
             Yes
@@ -504,6 +512,58 @@ const Customers = () => {
         </Modal>
       </Modal>
       {/*End: Edit Modal */}
+
+      {/*Start: Export Modal */}
+      <Modal
+        isOpen={showExport}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setShowExport(false);
+        }}
+        style={customStyles}
+      >
+        <h2>
+          Want to export{" "}
+          {selectCustomer.length <= 0 ? "all" : selectCustomer.length}?
+        </h2>
+        <p>
+          If you click export, File will download after a few second! Please
+          <b> choose</b> the type of file...{" "}
+        </p>
+        <div className="flex justify-end gap-4 mt-4">
+          <button
+            className="px-5 py-2.5 rounded-md border-[1px] "
+            onClick={() => {
+              setShowExport(false);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-5 py-2.5 bg-success text-white rounded-md"
+            onClick={(e) => {
+              var tempListCus: iCustomer[] = listCusFromDb;
+              if (selectCustomer.length > 0) tempListCus = selectCustomer;
+              exportToCSV(tempListCus, "list_customer");
+              setShowExport(false);
+            }}
+          >
+            Excel
+          </button>
+          <button
+            className="px-5 py-2.5 bg-error text-white rounded-md"
+            onClick={(e) => {
+              var tempListCus: iCustomer[] = listCusFromDb;
+              if (selectCustomer.length > 0) tempListCus = selectCustomer;
+              exportPDF(tempListCus);
+              setShowExport(false);
+            }}
+          >
+            PDF
+          </button>
+        </div>
+      </Modal>
+      {/*End: Export Modal*/}
 
       <div className="flex  items-center w-auto">
         <h1 className="text-center my-4">Customer List</h1>
@@ -596,6 +656,16 @@ const Customers = () => {
             <Trash />
             <ReactTooltip id="deleteEmployee" place="top" effect="solid" />
           </button>
+          <button
+            className="text-indigo-800 disabled:text-muted"
+            data-tip={selectCustomer.length === 0 ? "Export all" : "Export"}
+            data-for="exportCustomer"
+            disabled={listCusFromDb.length <= 0}
+            onClick={() => setShowExport(true)}
+          >
+            <DocumentArrowDown />
+            <ReactTooltip id="exportCustomer" place="top" effect="solid" />
+          </button>
         </div>
         {/* End: List action */}
       </div>
@@ -657,7 +727,6 @@ const Customers = () => {
                       tempListCus.splice(index, 1);
                     }
                     setSelectCustomer([...tempListCus]);
-                    console.log("listCusFromDb", listCusFromDb);
                     setColFilterSelected("");
                   }}
                   className={

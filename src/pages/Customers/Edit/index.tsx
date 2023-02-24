@@ -22,6 +22,7 @@ const EditCustomer: React.FC<iEditCustomerProps> = (props) => {
     setIsShow,
     listCus,
     changed,
+    setListSelect,
     setChanged,
   } = props;
 
@@ -36,7 +37,6 @@ const EditCustomer: React.FC<iEditCustomerProps> = (props) => {
 
   const editUser = () => {
     //#region Check logic
-    console.log(_phoneNumber.length !== 10);
     if (_firstName.length <= 0) {
       toast.error("First name is required");
       document.getElementById("floating_first_name")?.focus();
@@ -73,34 +73,32 @@ const EditCustomer: React.FC<iEditCustomerProps> = (props) => {
     }
     //#endregion Check logic
     else {
-      if (_firstName !== undefined) {
-        //#region Create temp emp
-        let tempCus: iCustomer = {
-          customerId: customer.customerId,
-          custFirstName: _firstName,
-          custLastName: _lastName,
-          custStreetAddress: _address,
-          custCity: _city,
-          custState: _state,
-          custZipCode: _zipCode,
-          custPhone: _phoneNumber,
-          custEmailAddress: _email,
-        };
-        //#endregion Create temp emp
+      //#region Create temp emp
+      let tempCus: iCustomer = {
+        customerId: customer.customerId,
+        custFirstName: _firstName,
+        custLastName: _lastName,
+        custStreetAddress: _address,
+        custCity: _city,
+        custState: _state,
+        custZipCode: _zipCode,
+        custPhone: _phoneNumber,
+        custEmailAddress: _email,
+      };
+      //#endregion Create temp emp
 
-        let tempList: iCustomer[] = listCus;
-        var tempIndex = tempList.findIndex(
-          (i) => i.customerId === tempCus.customerId
-        );
+      let tempList: iCustomer[] = listCus;
+      var tempIndex = tempList.findIndex(
+        (i) => i.customerId === tempCus.customerId
+      );
 
-        if (tempIndex > -1) {
-          tempList[tempIndex] = tempCus;
-        }
-
+      if (tempIndex > -1) {
+        tempList[tempIndex] = tempCus;
         addListCustomerToLocal(tempList);
         setIsShow(false);
+        setListSelect([tempCus]);
         toast.success("Edit employee success");
-      }
+      } else toast.error("Edit employee error");
     }
   };
   //#region Check changed?

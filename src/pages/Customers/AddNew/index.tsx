@@ -30,14 +30,7 @@ const AddNewCus: React.FC<iAddNewCusProps> = (props) => {
 
   const addNewCus = () => {
     //#region Check logic
-    console.log(
-      _email
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ),
-      _email
-    );
+
     if (_firstName.length <= 0) {
       toast.error("First name is required");
       document.getElementById("floating_first_name")?.focus();
@@ -74,26 +67,24 @@ const AddNewCus: React.FC<iAddNewCusProps> = (props) => {
     }
     //#endregion Check logic
     else {
-      if (_firstName !== undefined) {
-        let empCus: iCustomer = {
-          customerId: _idCus,
-          custFirstName: _firstName,
-          custLastName: _lastName,
-          custStreetAddress: _address,
-          custCity: _city,
-          custState: _state,
-          custZipCode: _zipCode,
-          custPhone: _phoneNumber,
-          custEmailAddress: _email,
-        };
-        let tempList: iCustomer[] = listCus;
-        tempList.push(empCus);
-        addListCustomerToLocal(tempList);
-        // localStorage.setItem("listEmployee", JSON.stringify(tempList));
-        setIsShow(false);
-        setListCus(tempList);
-        toast.success("Add new customer success");
-      }
+      let empCus: iCustomer = {
+        customerId: _idCus,
+        custFirstName: _firstName,
+        custLastName: _lastName,
+        custStreetAddress: _address,
+        custCity: _city,
+        custState: _state,
+        custZipCode: _zipCode,
+        custPhone: _phoneNumber,
+        custEmailAddress: _email,
+      };
+      let tempList: iCustomer[] = listCus;
+      tempList.push(empCus);
+      addListCustomerToLocal(tempList);
+      // localStorage.setItem("listEmployee", JSON.stringify(tempList));
+      setIsShow(false);
+      setListCus(tempList);
+      toast.success("Add new customer success");
     }
   };
 
@@ -106,7 +97,6 @@ const AddNewCus: React.FC<iAddNewCusProps> = (props) => {
         isOpen={_showAddConfirm}
         ariaHideApp={false}
         onRequestClose={() => {
-          console.log("click out site?");
           _setShowAddConfirm(true);
         }}
         style={customStyles}
@@ -256,7 +246,6 @@ const AddNewCus: React.FC<iAddNewCusProps> = (props) => {
               onChange={(e) => {
                 // _setZipCode(e.target.value.replace(/[^0-9]+/g, ""));
                 let temp = parseInt(e.target.value);
-                console.log(isNaN(temp));
                 if (isNaN(temp)) _setZipCode(0);
                 else _setZipCode(temp);
               }}

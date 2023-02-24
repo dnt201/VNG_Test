@@ -1,10 +1,14 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import NavLeft from "./modules/NavLeft";
 
 const App = () => {
   const [_mini, _setMini] = useState(false);
   const [_lazy, _setLazy] = useState(false);
+  useEffect(() => {
+    <Navigate to="/" replace />;
+  }, []);
   return (
     <div className="flex relative h-screen ">
       <NavLeft

@@ -23,15 +23,15 @@ import {
 } from "./FunctionEmployee";
 
 import EditEmployee from "./Edit";
-import { exportPDF, exportToCSV } from "./Export";
 import Select from "react-select";
 import { iTh, listFilter } from "src/data/interface";
 import { prettyMoney } from "src/prototype";
 import { ThreeDots } from "react-loader-spinner";
+import { iOrders } from "src/DTO/Orders";
+import { addListOrderToLocal, removeOrder } from "../Orders/FunctionOrder";
 
 const Employees = () => {
   const [selectEmployees, setSelectEmployees] = useState<iEmployee[]>([]);
-  console.log(selectEmployees);
   const [listEmpFromDb, setListEmpFromDb] = useState<iEmployee[]>([]);
   const [renderLazy, setRenderLazy] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
@@ -43,7 +43,6 @@ const Employees = () => {
 
   const [changed, setChanged] = useState(false);
 
-  const [showExport, setShowExport] = useState(false);
   const [colFilterSelected, setColFilterSelected] = useState<string>("");
   const [typeOfFilter, setTypeOfFilter] = useState(listFilter[0]);
   const [findString, setFindString] = useState("");
@@ -388,12 +387,10 @@ const Employees = () => {
   useEffect(() => {
     setTypeOfFilter(listFilter[0]);
   }, [colFilterSelected]);
-
   useEffect(() => {
     if (typing === undefined) setTyping(false);
     else setTyping(true);
     const delayDebounceFn = setTimeout(() => {
-      // console.log(searchTerm)
       setTyping(false);
       setFindStringFakeCallApi(findString);
       // Send Axios request here
@@ -402,6 +399,33 @@ const Employees = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [findString]);
 
+  const deleteEmployee = async () => {
+    var jsonListOrder = localStorage.getItem("listOrder");
+    if (jsonListOrder) {
+      var listOrderFromDb = JSON.parse(jsonListOrder) as iOrders[];
+      var tempForeach = [...listOrderFromDb] as iOrders[];
+      let tempListEmp: iEmployee[] = listEmpFromDb;
+      if (selectEmployees.length <= 0) {
+        toast.error("Error Check again");
+      } else {
+        selectEmployees.forEach((curSelect) => {
+          tempForeach.forEach((o) => {
+            if (o.employeeNumber === curSelect.employeeNumber) {
+              removeOrder(listOrderFromDb, o);
+            }
+          });
+          removeEmployee(tempListEmp, curSelect);
+        });
+        addListOrderToLocal(listOrderFromDb);
+        addListEmployeeToLocal(tempListEmp);
+        setSelectEmployees([]);
+        setRenderLazy(!renderLazy);
+      }
+      toast.success("Delete success! ");
+      setIsOpenDelete(false);
+    }
+  };
+
   return (
     <div className=" ">
       {/*Start: Add New Modal */}
@@ -409,7 +433,6 @@ const Employees = () => {
         isOpen={isOpenAdd}
         ariaHideApp={false}
         onRequestClose={() => {
-          console.log("click out site?");
           setConfirmCloseAdd(true);
         }}
         style={customStyles}
@@ -469,7 +492,10 @@ const Employees = () => {
         contentLabel="Example Modal"
       >
         <h2>Want to delete?</h2>
-        <p>If you delete this selected, you can't restore it after deleting </p>
+        <p>
+          If you delete this selected, you can't restore it after deleting.{" "}
+          <i>(This action will delete all order of the employee)</i>
+        </p>
         <div className="flex justify-end gap-4 mt-4">
           <button
             className="px-5 py-2.5 rounded-md border-[1px] "
@@ -483,19 +509,7 @@ const Employees = () => {
             className="px-5 py-2.5 bg-primary text-white rounded-md"
             onClick={() => {
               //delete
-              let tempListEmp: iEmployee[] = listEmpFromDb;
-              if (selectEmployees.length <= 0) {
-                toast.error("Error Check again");
-              } else {
-                selectEmployees.forEach((curSelect) => {
-                  removeEmployee(tempListEmp, curSelect);
-                });
-                addListEmployeeToLocal(tempListEmp);
-                setSelectEmployees([]);
-                setRenderLazy(!renderLazy);
-              }
-              toast.success("Delete success! ");
-              setIsOpenDelete(false);
+              deleteEmployee();
             }}
           >
             Yes
@@ -560,60 +574,6 @@ const Employees = () => {
         </Modal>
       </Modal>
       {/*End: Edit Employee Modal */}
-
-      {/*Start: Export Modal */}
-      <Modal
-        isOpen={showExport}
-        ariaHideApp={false}
-        onRequestClose={() => {
-          setShowExport(false);
-        }}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <h2>
-          Want to export{" "}
-          {selectEmployees.length <= 0 ? "all" : selectEmployees.length}?
-        </h2>
-        <p>
-          If you click export, File will download after a few second! Please
-          <b> choose</b> the type of file...{" "}
-        </p>
-        <div className="flex justify-end gap-4 mt-4">
-          <button
-            className="px-5 py-2.5 rounded-md border-[1px] "
-            onClick={() => {
-              setShowExport(false);
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            className="px-5 py-2.5 bg-success text-white rounded-md"
-            onClick={(e) => {
-              //delete
-              var tempListEmp: iEmployee[] = listEmpFromDb;
-              if (selectEmployees.length > 0) tempListEmp = selectEmployees;
-              exportToCSV(tempListEmp, "ListEmployee");
-              setShowExport(false);
-            }}
-          >
-            Excel
-          </button>
-          <button
-            className="px-5 py-2.5 bg-error text-white rounded-md"
-            onClick={(e) => {
-              var tempListEmp: iEmployee[] = listEmpFromDb;
-              if (selectEmployees.length > 0) tempListEmp = selectEmployees;
-              exportPDF(tempListEmp, "List Employee");
-              setShowExport(false);
-            }}
-          >
-            PDF
-          </button>
-        </div>
-      </Modal>
-      {/*End: Export Modal*/}
 
       {/*Start: Content Employees List */}
       <div className="flex  items-center w-auto">
@@ -707,16 +667,6 @@ const Employees = () => {
             <Trash />
             <ReactTooltip id="deleteEmployee" place="top" effect="solid" />
           </button>
-          <button
-            className="text-indigo-800 disabled:text-muted"
-            data-tip={selectEmployees.length === 0 ? "Export all" : "Export"}
-            data-for="exportEmployee"
-            disabled={listEmpFromDb.length <= 0}
-            onClick={() => setShowExport(true)}
-          >
-            <DocumentArrowDown />
-            <ReactTooltip id="exportEmployee" place="top" effect="solid" />
-          </button>
         </div>
         {/* End: List action */}
       </div>
@@ -770,7 +720,7 @@ const Employees = () => {
                   key={item.employeeNumber}
                   onClick={() => {
                     var tempListEmp: iEmployee[] = selectEmployees;
-                    console.log("selectEmployees", selectEmployees.length);
+
                     let index = findIndexOfEmployee(tempListEmp, item);
                     if (index === -1) {
                       tempListEmp.push(item);
@@ -778,7 +728,7 @@ const Employees = () => {
                       tempListEmp.splice(index, 1);
                     }
                     setSelectEmployees(tempListEmp);
-                    console.log("listEmpFromDb", listEmpFromDb);
+
                     setColFilterSelected("");
                     setRenderLazy(!renderLazy);
                   }}
