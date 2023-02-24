@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { customStyles } from "src/assets/customModal";
 import {
   Customers,
   Employees,
@@ -12,7 +13,13 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "src/icons";
+import Modal from "react-modal";
+
 import VNGLogo from "../../assets/image/VinaGame_logo.png";
+import { listCustomer, listEmployee, listOrder } from "src/data/seed";
+import { iCustomer } from "src/DTO/Customers";
+import { iEmployee } from "src/DTO/Employee";
+import { iOrders } from "src/DTO/Orders";
 interface iNavItem {
   title: string;
   icon: React.ElementType;
@@ -55,6 +62,8 @@ interface iNavLeftProps extends React.HTMLProps<HTMLDivElement> {
 const NavLeft: React.FC<iNavLeftProps> = (props) => {
   const { className, mini, setMini, lazy, setLazy } = props;
   const pathname = window.location.pathname;
+
+  const [isShowGene, setShowGene] = useState(false);
   const [curPath, setCurPath] = useState(pathname);
   useEffect(() => {
     if (mini === true) {
@@ -102,7 +111,7 @@ const NavLeft: React.FC<iNavLeftProps> = (props) => {
         </a>
         <h2 className="pt-2">VNG - Test</h2>
       </div>
-      <div className="flex flex-col mt-8 overflow-hidden">
+      <div className="flex flex-col mt-8 overflow-hidden flex-1">
         {listNav.map((item) => (
           <Link
             key={item.title}
@@ -129,6 +138,50 @@ const NavLeft: React.FC<iNavLeftProps> = (props) => {
           </Link>
         ))}
       </div>
+      <button
+        className="px-2 py-3 bg-primary font-semibold"
+        onClick={() => setShowGene(true)}
+      >
+        Gene Data
+      </button>
+      <Modal
+        isOpen={isShowGene}
+        ariaHideApp={false}
+        onRequestClose={() => {
+          setShowGene(false);
+        }}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2>Want to generate?</h2>
+        <p>If you click yes, all data will be reset!</p>
+        <div className="flex justify-end gap-4 mt-4">
+          <button
+            className="px-5 py-2.5 rounded-md border-[1px] "
+            onClick={() => {
+              setShowGene(false);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-5 py-2.5 bg-primary text-white rounded-md"
+            onClick={() => {
+              //delete
+              localStorage.clear();
+              var tempListCus: iCustomer[] = listCustomer;
+              var tempListEmp: iEmployee[] = listEmployee;
+              var tempListOrder: iOrders[] = listOrder;
+              localStorage.setItem("listCustomer", JSON.stringify(tempListCus));
+              localStorage.setItem("listEmployee", JSON.stringify(tempListEmp));
+              localStorage.setItem("listOrder", JSON.stringify(tempListOrder));
+              window.location.reload();
+            }}
+          >
+            Yes
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };

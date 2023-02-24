@@ -796,7 +796,7 @@ const Customers = () => {
                         : null)
                     }
                   >
-                    {item.custStreetAddress}
+                    {item.custState}
                   </td>
                   <td
                     className={

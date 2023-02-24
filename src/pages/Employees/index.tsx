@@ -423,6 +423,20 @@ const Employees = () => {
       }
       toast.success("Delete success! ");
       setIsOpenDelete(false);
+    } else {
+      let tempListEmp: iEmployee[] = listEmpFromDb;
+      if (selectEmployees.length <= 0) {
+        toast.error("Error Check again");
+      } else {
+        selectEmployees.forEach((curSelect) => {
+          removeEmployee(tempListEmp, curSelect);
+        });
+        addListEmployeeToLocal(tempListEmp);
+        setSelectEmployees([]);
+        setRenderLazy(!renderLazy);
+      }
+      toast.success("Delete success! ");
+      setIsOpenDelete(false);
     }
   };
 

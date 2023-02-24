@@ -217,7 +217,7 @@ const Orders = () => {
 
       // toast(findStringFakeCallApi);
     } else {
-      toast.error("Can't fetch data from server, please contact IT service");
+      // toast.error("Can't fetch data from server, please contact IT service");
     }
   }, [typeOfFilter, findStringFakeCallApi]); //colFilterSelected
 

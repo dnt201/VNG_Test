@@ -122,13 +122,18 @@ const AddNewOrder: React.FC<iAddNewOrder> = (props) => {
               onChange={(e) => {
                 _setCustomerId(parseInt(e.target.value));
               }}
+              disabled={!listCustomer || listCustomer.length <= 0}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300  focus:outline-none focus:ring-0 focus:border-primary peer"
             >
-              {listCustomer.map((c) => (
-                <option key={c.customerId} value={c.customerId}>
-                  {c.customerId}
-                </option>
-              ))}
+              {!listCustomer || listCustomer.length <= 0 ? (
+                <option selected>Create customer to select</option>
+              ) : (
+                listCustomer.map((c) => (
+                  <option key={c.customerId} value={c.customerId}>
+                    {c.customerId}
+                  </option>
+                ))
+              )}
             </select>
             <label
               htmlFor="floating_customerID"
@@ -145,13 +150,18 @@ const AddNewOrder: React.FC<iAddNewOrder> = (props) => {
               onChange={(e) => {
                 _setEmployeeNumber(parseInt(e.target.value));
               }}
+              disabled={listEmployee.length <= 0}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300  focus:outline-none focus:ring-0 focus:border-primary peer"
             >
-              {listEmployee.map((e) => (
-                <option key={e.employeeNumber} value={e.employeeNumber}>
-                  {e.employeeNumber}
-                </option>
-              ))}
+              {!listEmployee || listEmployee.length <= 0 ? (
+                <option selected={true}>Create employee to select</option>
+              ) : (
+                listEmployee.map((e) => (
+                  <option key={e.employeeNumber} value={e.employeeNumber}>
+                    {e.employeeNumber}
+                  </option>
+                ))
+              )}
             </select>
 
             <label

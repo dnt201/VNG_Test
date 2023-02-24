@@ -28,19 +28,21 @@ const DashBoard = () => {
       setListOrder(tempListOrder);
 
       var tempTop10: iCount[] = [];
-      tempTop10.push({ id: tempListOrder[0].customerId, count: 1 });
-      for (var i = 1; i < tempListOrder.length; i++) {
-        let checkExist = findExistCus(tempTop10, tempListOrder[i].customerId);
-        if (checkExist === -1) {
-          tempTop10.push({ id: tempListOrder[i].customerId, count: 1 });
-        } else {
-          tempTop10[checkExist].count++;
+      if (tempListOrder.length > 0) {
+        tempTop10.push({ id: tempListOrder[0].customerId, count: 1 });
+        for (var i = 1; i < tempListOrder.length; i++) {
+          let checkExist = findExistCus(tempTop10, tempListOrder[i].customerId);
+          if (checkExist === -1) {
+            tempTop10.push({ id: tempListOrder[i].customerId, count: 1 });
+          } else {
+            tempTop10[checkExist].count++;
+          }
         }
+        var resultList = tempTop10.sort((e1, e2) =>
+          e1.count < e2.count ? 1 : e1.count > e2.count ? -1 : 0
+        );
+        setListCusTop5(resultList);
       }
-      var resultList = tempTop10.sort((e1, e2) =>
-        e1.count < e2.count ? 1 : e1.count > e2.count ? -1 : 0
-      );
-      setListCusTop5(resultList);
     }
   }, []);
 
@@ -63,7 +65,7 @@ const DashBoard = () => {
             <h1 className="text-5xl text-center text-slate-800 line-clamp-1">
               {listCus.length}
             </h1>
-            <b className="text-green-800 text-center text-sm">Increase 15%</b>
+            <b className="text-green-800 text-center text-sm">Increase 5%</b>
             <i className="text-[10px] text-center ">vs premium 30days</i>
           </div>
         </div>
@@ -80,34 +82,48 @@ const DashBoard = () => {
         <div className=" flex flex-col px-2  py-3.5 bg-gray-200 rounded-md w-[200px] h-[200px] ">
           <h6>Preview</h6>
           <svg>
-            <circle cx={"50%"} cy={"50%"} r={"74"} fill="red" />
+            <circle cx={"50%"} cy={"50%"} r={"60"} fill="#4444" />
           </svg>
+          <span className="text-[10px] text-center">
+            em chưa vẽ pie chart không dùng thư viện bao giờ {":<"}
+          </span>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 py-4 flex-1 ">
         <div className="flex flex-col h-auto ">
-          <div className="flex-1 pt-2 flex items-end gap-6 border-b-[1.5px] border-black pl-2">
-            {listCusTop5.map((e, index) => (
-              <div
-                key={e.id}
-                style={{
-                  height:
-                    index === 0
-                      ? " 90% "
-                      : `  ${(e.count / listCusTop5[0].count) * 90}% `,
-                }}
-                className={" px-2 "}
-              >
-                <div className="px-[12px] bg-gray-300 h-full relative">
-                  <span className="absolute -bottom-3 translate-y-1/2 -translate-x-1/2 left-1/2 text-sm font-semibold">
-                    {e.id}
-                  </span>
-                  <span className="absolute -top-3 translate-y-1/2 -translate-x-1/2 left-1/2 text-sm">
-                    {e.count}
-                  </span>
+          <div className="flex-1 pt-2 flex items-end gap-6 border-b-[1.5px] border-black pl-2 relative ">
+            {listCusTop5 && listCusTop5.length >= 0 && (
+              <span className="absolute right-0 font-semibold text-xs">
+                Id Customer
+              </span>
+            )}
+            {!listCusTop5 || listCusTop5.length <= 0 ? (
+              <i className="text-center w-full pb-2 text-sm">
+                No data to show!
+              </i>
+            ) : (
+              listCusTop5.map((e, index) => (
+                <div
+                  key={e.id}
+                  style={{
+                    height:
+                      index === 0
+                        ? " 90% "
+                        : `  ${(e.count / listCusTop5[0].count) * 90}% `,
+                  }}
+                  className={" px-2 "}
+                >
+                  <div className="px-[12px] bg-gray-300 h-full relative">
+                    <span className="absolute -bottom-3 translate-y-1/2 -translate-x-1/2 left-1/2 text-sm font-semibold">
+                      {e.id}
+                    </span>
+                    <span className="absolute -top-3 translate-y-1/2 -translate-x-1/2 left-1/2 text-sm">
+                      {e.count}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
           <h6 className=" mt-5 text-center">
             Top 5 customer have the most orders
